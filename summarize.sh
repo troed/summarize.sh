@@ -6,7 +6,7 @@
 # Thank you: yt-dlp, whisper.cpp, ffmpeg, ollama, curl and Mixtral
 #
 
-OLLAMA_HOST=192.168.0.6:11434
+OLLAMA_HOST=127.0.0.1:11434
 OLLAMA_MODEL=mixtral
 OLLAMA_CONTEXT_SIZE=8192
 WHISPER_CPP_PATH="$HOME/whisper.cpp"

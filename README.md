@@ -31,3 +31,6 @@ I made this script for my personal use, where I run it on a quite beefy 20 core 
 
 Make sure to compile/configure both whisper.cpp and ollama to make use of GPU if you have a suitable one.
 
+# Planned development
+
+After having printed the summary I will switch to a conversational interface where it's possible to ask the LLM questions regarding the transcribed content.
