@@ -4,7 +4,7 @@ A bit of glue between components that is able to textually summarize Youtube vid
 
 No actual intelligence resides in this script, it just makes use of the great work done by other projects. Since the purpose is to not have to sit through 8-12 minutes of someone explaining what should've just been a short blog post, it's imperative that the summary is factually correct. That's the reason behind the default usage of the very capable Mixtral 8x7b LLM.
 
-# Prerequities
+# Prerequisites
 
 * yt-dlp - to download Youtube videos
 * ffmpeg - to transcode the original audio to 16kHz
