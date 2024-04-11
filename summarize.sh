@@ -76,6 +76,7 @@ if [ -z "${input}" ]; then
 fi
 echo -n "Summarizing text... "
 prompt="Please summarize the following textual contents of a video: $input"
+prompt=${prompt//\"/\\\"}
 arg="{\"model\": \"$OLLAMA_MODEL\", \
       \"prompt\": \"${prompt}\", \
       \"stream\": false, \
@@ -94,10 +95,9 @@ if (( $? )); then
 	exit
 fi
 resp=$(echo ${resp} | jq '.response')
-resp=${resp/\\n/\n}
 echo
 echo
-echo $resp
+echo -e $resp
 echo
 cleanup
 # unload ollama model from GPU
