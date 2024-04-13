@@ -27,9 +27,14 @@ This script doesn't do anything clever, it just makes use of the great work done
 
 # Performance
 
-I made this script for my personal use, where I run it on a quite beefy 20 core workstation with 96GB RAM and a 12GB VRAM GPU. Even on my workstation the script will need 1-2 minutes to summarize an 8-16 minute video. The time is mostly spent in the Mixtral model, so to increase performance that's where you should try others.
+I made this script for my personal use, where I run it on a quite beefy 20 core workstation with 96GB RAM and a 12GB VRAM GPU. To give an estimate on what performance you could expect to see I've chosen two videos randomly:
 
-Make sure to compile/configure both whisper.cpp and ollama to make use of GPU if you have a suitable one.
+https://www.youtube.com/watch?v=NngCHTImH1g - a 20 minute long video, takes 6 minutes 40 seconds to complete on my system.
+https://www.youtube.com/watch?v=emFf4W3WzYI - 11 minutes long, completes in 3 minutes 13 seconds.
+
+The time is mostly spent in the Mixtral model, so to increase performance that's where you should try others. A friend with a 24GB VRAM 3090 sees about a minute less time spent in Mixtral on the first example.
+
+Make sure to compile/configure both whisper.cpp and ollama to make use of GPU if you have a competent one.
 
 # Planned development
 
