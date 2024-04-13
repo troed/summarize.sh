@@ -23,14 +23,20 @@ This script doesn't do anything clever, it just makes use of the great work done
    
 # Usage
 
-./summarize.sh \<Youtube URL\>
+./summarize.sh [-q] [-c] [-d] \<Youtube url\>
 
+Optional parameters:
+
+  -q : Quiet, does not print any progress information or execution time  
+  -c : Conversational, waits for further questions after the summary is printed  
+  -d : Debug, prints all output from the called programs  
+ 
 # Performance
 
 I made this script for my personal use, where I run it on a quite beefy 20 core workstation with 96GB RAM and a 12GB VRAM GPU. To give an estimate on what performance you could expect to see I've chosen two videos randomly:
 
-https://www.youtube.com/watch?v=NngCHTImH1g - a 20 minute long video, takes 6 minutes 40 seconds to complete on my system.
-https://www.youtube.com/watch?v=emFf4W3WzYI - 11 minutes long, completes in 3 minutes 13 seconds.
+https://www.youtube.com/watch?v=NngCHTImH1g - a 20 minute long video, takes 6 minutes 40 seconds to complete on my system.  
+https://www.youtube.com/watch?v=emFf4W3WzYI - 11 minutes long, completes in 3 minutes 13 seconds.  
 
 The time is mostly spent in the Mixtral model, so to increase performance that's where you should try others. A friend with a 24GB VRAM 3090 sees about a minute less time spent in Mixtral on the first example.
 
@@ -38,6 +44,6 @@ Make sure to compile/configure both whisper.cpp and ollama to make use of GPU if
 
 # Planned development
 
-* After having printed the summary I will switch to a conversational interface where it's possible to ask the LLM questions regarding the transcribed content.
+* ~~After having printed the summary I will switch to a conversational interface where it's possible to ask the LLM questions regarding the transcribed content.~~
 * Possibly: Make use of timestamped Whisper output to be able to query from which point in the original video a certain claim is made.
 * 
