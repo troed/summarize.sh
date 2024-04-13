@@ -37,6 +37,12 @@ if [ -z $(which yt-dlp) ]; then
 	fail=true
 fi
 
+if [ -z $(which jq) ]; then
+	echo "Unable to find the JSON parser 'jq', please install it"
+	echo
+	fail=true
+fi
+
 if [ -z $(which ffmpeg) ]; then
 	echo "Unable to find the ffmpeg executable"
 	echo
@@ -58,6 +64,8 @@ fi
 if [ true = $fail ]; then
 	exit
 fi
+
+start=$(date +%s)
 
 orig_audio=$(mktemp -u)
 echo -n "Downloading audio... "
@@ -95,11 +103,16 @@ if (( $? )); then
 	exit
 fi
 resp=$(echo ${resp} | jq '.response')
-echo
+
+end=$(date +%s)
+echo "Completed in $(($end-$start)) seconds."
+
 echo
 echo -e $resp
 echo
 cleanup
+
+
 # unload ollama model from GPU
 arg="{\"model\": \"$OLLAMA_MODEL\", \
 		  \"keep_alive\": 0
