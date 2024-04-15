@@ -9,15 +9,15 @@
 
 OLLAMA_HOST=127.0.0.1:11434
 OLLAMA_MODEL=mixtral
-OLLAMA_CONTEXT_SIZE=8192
+OLLAMA_CONTEXT_SIZE=32768
 WHISPER_CPP_PATH="$HOME/whisper.cpp"
 WHISPER_CPP_MODEL=ggml-large-v3.bin
 
 function help {
-	echo "Usage: summarize.sh [-q] [-c] <Youtube url>"
+	echo "Usage: summarize.sh [-q] [-c] [-d] <Youtube url>"
 	echo
 	echo "Optional parameters:"
-  echo
+	echo
 	echo "  -q : Quiet, does not print any progress information or execution time"
 	echo "  -c : Conversational, waits for further questions after the summary is printed"
 	echo "  -d : Debug, prints all output from the called programs"
@@ -216,7 +216,7 @@ while true; do
     if [ -z "$question" ]; then
 			break
     else
-			resp=$(query "$question in the following textual representation of a video: $input")
+			resp=$(query "$question. Make sure to only use knowledge found in the following textual representation of a video: $input")
 			answer=$(echo ${resp} | jq '.response')
 			context=$(echo ${resp} | jq '.context')
 			echo -e $answer

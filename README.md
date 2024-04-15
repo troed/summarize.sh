@@ -4,6 +4,8 @@ A bit of glue between components that is able to textually summarize Youtube vid
 
 This script doesn't do anything clever, it just makes use of the great work done by other projects. Since the purpose is to not have to sit through 8-12 minutes of someone explaining what should've just been a short blog post, it's imperative that the summary is factually correct. That's the reason behind the default usage of the very capable Mixtral 8x7b LLM.
 
+However. Thanks to the large context window of Mixtral, it's also possible to run the script against much longer videos. It's been tested on a 1 hour long podcast, where the conversation mode was subsequently used to dive into more details on one of the subjects mentioned in the summary.
+
 # Prerequisites
 
 * yt-dlp - to download Youtube videos
@@ -46,4 +48,4 @@ Make sure to compile/configure both whisper.cpp and ollama to make use of GPU if
 
 * ~~After having printed the summary I will switch to a conversational interface where it's possible to ask the LLM questions regarding the transcribed content.~~
 * Possibly: Make use of timestamped Whisper output to be able to query from which point in the original video a certain claim is made.
-* 
+* ...
