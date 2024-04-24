@@ -9,9 +9,15 @@
 
 OLLAMA_HOST=127.0.0.1:11434
 OLLAMA_MODEL=mixtral
-OLLAMA_CONTEXT_SIZE=32768
+OLLAMA_CONTEXT_SIZE=8192
+# >80GB RAM needed to use the full context width of Mixtral
+#OLLAMA_CONTEXT_SIZE=32768
 WHISPER_CPP_PATH="$HOME/whisper.cpp"
 WHISPER_CPP_MODEL=ggml-large-v3.bin
+WHISPER_CPP_NTHREADS=4
+WHISPER_CPP_NPROCESSORS=1
+# Possible speedup to the transcribing phase
+#WHISPER_CPP_NPROCESSORS=4
 
 function help {
 	echo "Usage: summarize.sh [-q] [-c] [-d] <Youtube url>"
@@ -28,8 +34,8 @@ function help {
 function unload {
 	(
 		arg="{\"model\": \"$OLLAMA_MODEL\", \
-				  \"keep_alive\": 0
-		     }"
+					\"keep_alive\": 0
+				 }"
 		resp=$(echo ${arg} | curl -s http://$OLLAMA_HOST/api/generate -d @-)
 		resp=$(echo ${resp} | jq '.done')
 		if [[ "true" != "${resp}" ]]; then
@@ -46,9 +52,9 @@ function cleanup {
 }
 
 function print {
-  if [[ -z $quiet ]]; then
+	if [[ -z $quiet ]]; then
 		echo -n "$1"
-  fi
+	fi
 }
 
 function error {
@@ -70,10 +76,25 @@ function query {
 	arg+="\"num_ctx\": $OLLAMA_CONTEXT_SIZE"
 	arg+="}"
 	arg+="}"
-	echo ${arg} | curl -s http://$OLLAMA_HOST/api/generate -d @-
+	resp=$(echo ${arg} | curl -s http://$OLLAMA_HOST/api/generate -d @-)
 	if (( $? )); then
-		echo error
+		error
+		error "Unable to reach ollama server at $OLLAMA_HOST."
+		error
+		fail=true
 	fi
+	error=$(echo ${resp} | jq '.error')
+	if [ ! -z "$error" ] && [ "null" != "$error" ]; then
+		error
+		error "LLM summary failed with the message: $error"
+		error
+		fail=true
+	fi
+	if [ true = $fail ]; then
+		cleanup
+		exit
+	fi
+	echo "$resp"
 }
 
 # setting these makes the output reproducible
@@ -169,9 +190,9 @@ else
 fi
 print "Transcribing audio... "
 if [ true = $debug ]; then
-	input=$($WHISPER_CPP_PATH/main -m $WHISPER_CPP_PATH/models/$WHISPER_CPP_MODEL -np -nt -f ${audio}.wav)
+	input=$($WHISPER_CPP_PATH/main -p $WHISPER_CPP_NPROCESSORS -t $WHISPER_CPP_NTHREADS -m $WHISPER_CPP_PATH/models/$WHISPER_CPP_MODEL -np -nt -f ${audio}.wav)
 else
-	input=$($WHISPER_CPP_PATH/main -m $WHISPER_CPP_PATH/models/$WHISPER_CPP_MODEL -np -nt -f ${audio}.wav 2>/dev/null)
+	input=$($WHISPER_CPP_PATH/main -p $WHISPER_CPP_NPROCESSORS -t $WHISPER_CPP_NTHREADS -m $WHISPER_CPP_PATH/models/$WHISPER_CPP_MODEL -np -nt -f ${audio}.wav 2>/dev/null)
 fi
 if [ -z "${input}" ]; then
 	error
@@ -184,13 +205,6 @@ print "Summarizing text... "
 input=${input//\"/\\\"}
 prompt="Please summarize the following textual contents of a video: $input"
 resp=$(query "$prompt")
-if [[ "error" == "$resp" ]]; then
-	error
-	error "Unable to reach ollama server at $OLLAMA_HOST."
-	error
-	cleanup
-	exit
-fi
 summary=$(echo ${resp} | jq '.response')
 context=$(echo ${resp} | jq '.context')
 
@@ -210,18 +224,18 @@ fi
 
 # Conversational code follows
 while true; do
+	echo
+	read -p "Enter question (enter to exit): " question
+	echo
+	if [ -z "$question" ]; then
+		break
+	else
+		resp=$(query "$question. Make sure to only use knowledge found in the following textual representation of a video: $input")
+		answer=$(echo ${resp} | jq '.response')
+		context=$(echo ${resp} | jq '.context')
+		echo -e $answer
 		echo
-    read -p "Enter question (enter to exit): " question
-    echo
-    if [ -z "$question" ]; then
-			break
-    else
-			resp=$(query "$question. Make sure to only use knowledge found in the following textual representation of a video: $input")
-			answer=$(echo ${resp} | jq '.response')
-			context=$(echo ${resp} | jq '.context')
-			echo -e $answer
-			echo
-    fi
+	fi
 done
 
 unload
