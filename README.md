@@ -32,8 +32,8 @@ The script saves transcriptions to a folder in the same directory, and if the sa
 Optional parameters:
 
   -q : Quiet, does not print any progress information or execution time  
-  -c : Conversational, waits for further questions after the summary is printed  
-  -C : Conversational, immediately prompts without first doing a summary  
+  -c : Conversational, waits for further questions after the summary is printed
+  -C : Conversational, immediately prompts without first doing a summary
   -d : Debug, prints all output from the called programs  
  
 # Performance
@@ -62,4 +62,6 @@ Of course, most importantly is to make sure to compile/configure both whisper.cp
 
 With all transcriptions saved, finding from which source you read about something interesting becomes a simple command:
 
+```bash
 $ grep -H <something> .summarize.data/*/transcription.txt | while read line; do cat "${line%/*}"/url.txt; done < <(awk '{print $1}')
+```
