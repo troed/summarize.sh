@@ -32,8 +32,8 @@ The script saves transcriptions to a folder in the same directory, and if the sa
 Optional parameters:
 
   -q : Quiet, does not print any progress information or execution time  
-  -c : Conversational, waits for further questions after the summary is printed
-  -C : Conversational, immediately prompts without first doing a summary
+  -c : Conversational, waits for further questions after the summary is printed  
+  -C : Conversational, immediately prompts without first doing a summary  
   -d : Debug, prints all output from the called programs  
  
 # Performance
